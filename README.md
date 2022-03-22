@@ -1,12 +1,13 @@
 
 The yolox object detection
 
-This is a sample ncnn android project, it depends on ncnn library and opencv
+This is a sample ncnn android project, it depends on ncnn library,opencv and ncnn yolov5
 
 https://github.com/Tencent/ncnn
 
 https://github.com/nihui/opencv-mobile
 
+https://github.com/nihui/ncnn-android-yolov5
 
 ## how to build and run
 ### step1
