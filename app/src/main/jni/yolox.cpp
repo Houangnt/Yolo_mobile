@@ -1,61 +1,9 @@
-#include "yolox.h"
+#include "yolov5.h"
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 
 #include "cpu.h"
-
-
-
-// YOLO use the same focus in yolov5
-class YoloV5Focus : public ncnn::Layer
-{
-public:
-    YoloV5Focus()
-    {
-        one_blob_only = true;
-    }
-
-    virtual int forward(const ncnn::Mat& bottom_blob, ncnn::Mat& top_blob, const ncnn::Option& opt) const
-    {
-        int w = bottom_blob.w;
-        int h = bottom_blob.h;
-        int channels = bottom_blob.c;
-
-        int outw = w / 2;
-        int outh = h / 2;
-        int outc = channels * 4;
-
-        top_blob.create(outw, outh, outc, 4u, 1, opt.blob_allocator);
-        if (top_blob.empty())
-            return -100;
-
-        #pragma omp parallel for num_threads(opt.num_threads)
-        for (int p = 0; p < outc; p++)
-        {
-            const float* ptr = bottom_blob.channel(p % channels).row((p / channels) % 2) + ((p / channels) / 2);
-            float* outptr = top_blob.channel(p);
-
-            for (int i = 0; i < outh; i++)
-            {
-                for (int j = 0; j < outw; j++)
-                {
-                    *outptr = *ptr;
-
-                    outptr += 1;
-                    ptr += 2;
-                }
-
-                ptr += w;
-            }
-        }
-
-        return 0;
-    }
-};
-
-DEFINE_LAYER_CREATOR(YoloV5Focus)
-
 
 static inline float intersection_area(const Object& a, const Object& b)
 {
@@ -146,19 +94,23 @@ static inline float sigmoid(float x)
 {
     return static_cast<float>(1.f / (1.f + exp(-x)));
 }
-static void generate_proposals(const ncnn::Mat& anchors, int stride, const ncnn::Mat& in_pad, const ncnn::Mat& feat_blob, float prob_threshold, std::vector<Object>& objects)
-{
+// unsigmoid
+static inline float unsigmoid(float y) {
+    return static_cast<float>(-1.0 * (log((1.0 / y) - 1.0)));
+}
+static void generate_proposals(const ncnn::Mat &anchors, int stride, const ncnn::Mat &in_pad,
+                               const ncnn::Mat &feat_blob, float prob_threshold,
+                               std::vector <Object> &objects) {
     const int num_grid = feat_blob.h;
+    if (prob_threshold > 0.6)
+        float unsig_pro = unsigmoid(prob_threshold);
 
     int num_grid_x;
     int num_grid_y;
-    if (in_pad.w > in_pad.h)
-    {
+    if (in_pad.w > in_pad.h) {
         num_grid_x = in_pad.w / stride;
         num_grid_y = num_grid / num_grid_x;
-    }
-    else
-    {
+    } else {
         num_grid_y = in_pad.h / stride;
         num_grid_x = num_grid / num_grid_y;
     }
@@ -167,63 +119,99 @@ static void generate_proposals(const ncnn::Mat& anchors, int stride, const ncnn:
 
     const int num_anchors = anchors.w / 2;
 
-    for (int q = 0; q < num_anchors; q++)
-    {
+    for (int q = 0; q < num_anchors; q++) {
         const float anchor_w = anchors[q * 2];
         const float anchor_h = anchors[q * 2 + 1];
 
         const ncnn::Mat feat = feat_blob.channel(q);
 
-        for (int i = 0; i < num_grid_y; i++)
-        {
-            for (int j = 0; j < num_grid_x; j++)
-            {
-                const float* featptr = feat.row(i * num_grid_x + j);
+        for (int i = 0; i < num_grid_y; i++) {
+            for (int j = 0; j < num_grid_x; j++) {
+                const float *featptr = feat.row(i * num_grid_x + j);
 
                 // find class index with max class score
                 int class_index = 0;
                 float class_score = -FLT_MAX;
-                for (int k = 0; k < num_class; k++)
-                {
-                    float score = featptr[5 + k];
-                    if (score > class_score)
-                    {
-                        class_index = k;
-                        class_score = score;
-                    }
-                }
-
                 float box_score = featptr[4];
+                if (prob_threshold > 0.6) {
+                    // while prob_threshold > 0.6, unsigmoid better than sigmoid
+                    if (box_score > unsig_pro) {
+                        for (int k = 0; k < num_class; k++) {
+                            float score = featptr[5 + k];
+                            if (score > class_score) {
+                                class_index = k;
+                                class_score = score;
+                            }
+                        }
 
-                float confidence = sigmoid(box_score) * sigmoid(class_score);
+                        float confidence = sigmoid(box_score) * sigmoid(class_score);
 
-                if (confidence >= prob_threshold)
-                {
-                    float dx = sigmoid(featptr[0]);
-                    float dy = sigmoid(featptr[1]);
-                    float dw = sigmoid(featptr[2]);
-                    float dh = sigmoid(featptr[3]);
+                        if (confidence >= prob_threshold) {
 
-                    float pb_cx = (dx * 2.f - 0.5f + j) * stride;
-                    float pb_cy = (dy * 2.f - 0.5f + i) * stride;
+                            float dx = sigmoid(featptr[0]);
+                            float dy = sigmoid(featptr[1]);
+                            float dw = sigmoid(featptr[2]);
+                            float dh = sigmoid(featptr[3]);
 
-                    float pb_w = pow(dw * 2.f, 2) * anchor_w;
-                    float pb_h = pow(dh * 2.f, 2) * anchor_h;
+                            float pb_cx = (dx * 2.f - 0.5f + j) * stride;
+                            float pb_cy = (dy * 2.f - 0.5f + i) * stride;
 
-                    float x0 = pb_cx - pb_w * 0.5f;
-                    float y0 = pb_cy - pb_h * 0.5f;
-                    float x1 = pb_cx + pb_w * 0.5f;
-                    float y1 = pb_cy + pb_h * 0.5f;
+                            float pb_w = pow(dw * 2.f, 2) * anchor_w;
+                            float pb_h = pow(dh * 2.f, 2) * anchor_h;
 
-                    Object obj;
-                    obj.rect.x = x0;
-                    obj.rect.y = y0;
-                    obj.rect.width = x1 - x0;
-                    obj.rect.height = y1 - y0;
-                    obj.label = class_index;
-                    obj.prob = confidence;
+                            float x0 = pb_cx - pb_w * 0.5f;
+                            float y0 = pb_cy - pb_h * 0.5f;
+                            float x1 = pb_cx + pb_w * 0.5f;
+                            float y1 = pb_cy + pb_h * 0.5f;
 
-                    objects.push_back(obj);
+                            Object obj;
+                            obj.rect.x = x0;
+                            obj.rect.y = y0;
+                            obj.rect.width = x1 - x0;
+                            obj.rect.height = y1 - y0;
+                            obj.label = class_index;
+                            obj.prob = confidence;
+
+                            objects.push_back(obj);
+                        }
+                    } else {
+                        for (int k = 0; k < num_class; k++) {
+                            float score = featptr[5 + k];
+                            if (score > class_score) {
+                                class_index = k;
+                                class_score = score;
+                            }
+                        }
+                        float confidence = sigmoid(box_score) * sigmoid(class_score);
+
+                        if (confidence >= prob_threshold) {
+                            float dx = sigmoid(featptr[0]);
+                            float dy = sigmoid(featptr[1]);
+                            float dw = sigmoid(featptr[2]);
+                            float dh = sigmoid(featptr[3]);
+
+                            float pb_cx = (dx * 2.f - 0.5f + j) * stride;
+                            float pb_cy = (dy * 2.f - 0.5f + i) * stride;
+
+                            float pb_w = pow(dw * 2.f, 2) * anchor_w;
+                            float pb_h = pow(dh * 2.f, 2) * anchor_h;
+
+                            float x0 = pb_cx - pb_w * 0.5f;
+                            float y0 = pb_cy - pb_h * 0.5f;
+                            float x1 = pb_cx + pb_w * 0.5f;
+                            float y1 = pb_cy + pb_h * 0.5f;
+
+                            Object obj;
+                            obj.rect.x = x0;
+                            obj.rect.y = y0;
+                            obj.rect.width = x1 - x0;
+                            obj.rect.height = y1 - y0;
+                            obj.label = class_index;
+                            obj.prob = confidence;
+
+                            objects.push_back(obj);
+                        }
+                    }
                 }
             }
         }
@@ -231,13 +219,13 @@ static void generate_proposals(const ncnn::Mat& anchors, int stride, const ncnn:
 }
  
  
-Yolox::Yolox()
+Yolov5::Yolov5()
 {
     blob_pool_allocator.set_size_compare_ratio(0.f);
     workspace_pool_allocator.set_size_compare_ratio(0.f);
 }
 
-int Yolox::load(const char* modeltype, int _target_size, const float* _mean_vals, const float* _norm_vals, bool use_gpu)
+int Yolov5::load(const char* modeltype, int _target_size, const float* _mean_vals, const float* _norm_vals, bool use_gpu)
 {
     yolov5.clear();
     blob_pool_allocator.clear();
@@ -275,7 +263,7 @@ int Yolox::load(const char* modeltype, int _target_size, const float* _mean_vals
     return 0;
 }
 
-int Yolox::load(AAssetManager* mgr, const char* modeltype, int _target_size, bool use_gpu)
+int Yolov5::load(AAssetManager* mgr, const char* modeltype, int _target_size, bool use_gpu)
 {
     yolov5.clear();
     blob_pool_allocator.clear();
@@ -308,7 +296,7 @@ int Yolox::load(AAssetManager* mgr, const char* modeltype, int _target_size, boo
 }
 
 
-int Yolox::detect(const cv::Mat& rgb, std::vector<Object>& objects, float prob_threshold, float nms_threshold)
+int Yolov5::detect(const cv::Mat& rgb, std::vector<Object>& objects, float prob_threshold, float nms_threshold)
 {
 
     int img_w = rgb.cols;
@@ -439,7 +427,7 @@ int Yolox::detect(const cv::Mat& rgb, std::vector<Object>& objects, float prob_t
     return 0;
 }
 
-int Yolox::draw(cv::Mat& rgb, const std::vector<Object>& objects)
+int Yolov5::draw(cv::Mat& rgb, const std::vector<Object>& objects)
 {
     static const char* class_names[] = {
         "person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "traffic light",
