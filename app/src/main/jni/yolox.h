@@ -1,8 +1,8 @@
 
 
 
-#ifndef YOLOX_H
-#define YOLOX_H
+#ifndef YOLOv5_H
+#define YOLOv5_H
 
 #include <opencv2/core/core.hpp>
 
@@ -17,10 +17,10 @@ struct Object
 };
 
 
-class Yolox
+class Yolov5
 {
 public:
-    Yolox();
+    Yolov5();
 
     int load(const char* modeltype, int target_size, const float* mean_vals, const float* norm_vals, bool use_gpu = false);
 
