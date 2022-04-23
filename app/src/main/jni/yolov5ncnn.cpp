@@ -14,7 +14,7 @@
 #include <platform.h>
 #include <benchmark.h>
 
-#include "yolox.h"
+#include "yolov5.h"
 
 #include "ndkcamera.h"
 
@@ -98,7 +98,7 @@ static int draw_fps(cv::Mat& rgb)
     return 0;
 }
 
-static Yolox* g_yolox = 0;
+static Yolov5* g_yolov5 = 0;
 static ncnn::Mutex lock;
 
 class MyNdkCamera : public NdkCameraWindow
@@ -112,12 +112,12 @@ void MyNdkCamera::on_image_render(cv::Mat& rgb) const
     {
         ncnn::MutexLockGuard g(lock);
 
-        if (g_yolox)
+        if (g_yolov5)
         {
             std::vector<Object> objects;
-            g_yolox->detect(rgb, objects);
+            g_yolov5->detect(rgb, objects);
 
-            g_yolox->draw(rgb, objects);
+            g_yolov5->draw(rgb, objects);
         }
         else
         {
@@ -148,15 +148,15 @@ JNIEXPORT void JNI_OnUnload(JavaVM* vm, void* reserved)
     {
         ncnn::MutexLockGuard g(lock);
 
-        delete g_yolox;
-        g_yolox = 0;
+        delete g_yolov5;
+        g_yolov5 = 0;
     }
 
     delete g_camera;
     g_camera = 0;
 }
 
-JNIEXPORT jboolean JNICALL Java_com_tencent_ncnnyolox_NcnnYolox_loadModel(JNIEnv* env, jobject thiz, jobject assetManager, jint modelid, jint cpugpu)
+JNIEXPORT jboolean JNICALL Java_com_tencent_ncnnyolov5_NcnnYolov5_loadModel(JNIEnv* env, jobject thiz, jobject assetManager, jint modelid, jint cpugpu)
 {
     if (modelid < 0 || modelid > 6 || cpugpu < 0 || cpugpu > 1)
     {
@@ -169,7 +169,7 @@ JNIEXPORT jboolean JNICALL Java_com_tencent_ncnnyolox_NcnnYolox_loadModel(JNIEnv
 
     const char* modeltypes[] =
     {
-        "yolox-nano"
+        "yolov5"
     };
 
     const int target_sizes[] =
@@ -188,14 +188,14 @@ JNIEXPORT jboolean JNICALL Java_com_tencent_ncnnyolox_NcnnYolox_loadModel(JNIEnv
         if (use_gpu && ncnn::get_gpu_count() == 0)
         {
             // no gpu
-            delete g_yolox;
-            g_yolox = 0;
+            delete g_yolov5;
+            g_yolov5 = 0;
         }
         else
         {
-            if (!g_yolox)
-                g_yolox = new Yolox;
-            g_yolox->load(mgr, modeltype, target_size, use_gpu);
+            if (!g_yolov5)
+                g_yolov5 = new Yolov5;
+            g_yolov5->load(mgr, modeltype, target_size, use_gpu);
         }
     }
 
@@ -203,7 +203,7 @@ JNIEXPORT jboolean JNICALL Java_com_tencent_ncnnyolox_NcnnYolox_loadModel(JNIEnv
 }
 
 // public native boolean openCamera(int facing);
-JNIEXPORT jboolean JNICALL Java_com_tencent_ncnnyolox_NcnnYolox_openCamera(JNIEnv* env, jobject thiz, jint facing)
+JNIEXPORT jboolean JNICALL Java_com_tencent_ncnnyolov5_NcnnYolov5_openCamera(JNIEnv* env, jobject thiz, jint facing)
 {
     if (facing < 0 || facing > 1)
         return JNI_FALSE;
@@ -216,7 +216,7 @@ JNIEXPORT jboolean JNICALL Java_com_tencent_ncnnyolox_NcnnYolox_openCamera(JNIEn
 }
 
 // public native boolean closeCamera();
-JNIEXPORT jboolean JNICALL Java_com_tencent_ncnnyolox_NcnnYolox_closeCamera(JNIEnv* env, jobject thiz)
+JNIEXPORT jboolean JNICALL Java_com_tencent_ncnnyolov5_NcnnYolov5_closeCamera(JNIEnv* env, jobject thiz)
 {
     __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "closeCamera");
 
