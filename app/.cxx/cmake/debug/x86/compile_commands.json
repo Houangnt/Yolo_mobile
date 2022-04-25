@@ -1,0 +1,19 @@
+[
+{
+  "directory": "C:/Users/GHTK/Desktop/CO/Yolo_mobile/app/.cxx/cmake/debug/x86",
+  "command": "C:\\Users\\GHTK\\AppData\\Local\\Android\\Sdk\\ndk\\21.4.7075529\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=i686-none-linux-android24 --gcc-toolchain=C:/Users/GHTK/AppData/Local/Android/Sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/GHTK/AppData/Local/Android/Sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -Dncnnyolov5_EXPORTS -isystem C:/Users/GHTK/Desktop/AI/ncnn-20210525-android-vulkan/x86/include/ncnn -isystem C:/Users/GHTK/Desktop/AI/opencv-mobile-4.5.3-android/sdk/native/jni/include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -O0 -fno-limit-debug-info  -fPIC   -fno-rtti -fno-exceptions -std=gnu++11 -o CMakeFiles\\ncnnyolov5.dir\\yolov5ncnn.cpp.o -c C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\src\\main\\jni\\yolov5ncnn.cpp",
+  "file": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\src\\main\\jni\\yolov5ncnn.cpp"
+},
+
+{
+  "directory": "C:/Users/GHTK/Desktop/CO/Yolo_mobile/app/.cxx/cmake/debug/x86",
+  "command": "C:\\Users\\GHTK\\AppData\\Local\\Android\\Sdk\\ndk\\21.4.7075529\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=i686-none-linux-android24 --gcc-toolchain=C:/Users/GHTK/AppData/Local/Android/Sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/GHTK/AppData/Local/Android/Sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -Dncnnyolov5_EXPORTS -isystem C:/Users/GHTK/Desktop/AI/ncnn-20210525-android-vulkan/x86/include/ncnn -isystem C:/Users/GHTK/Desktop/AI/opencv-mobile-4.5.3-android/sdk/native/jni/include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -O0 -fno-limit-debug-info  -fPIC   -fno-rtti -fno-exceptions -std=gnu++11 -o CMakeFiles\\ncnnyolov5.dir\\yolov5.cpp.o -c C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\src\\main\\jni\\yolov5.cpp",
+  "file": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\src\\main\\jni\\yolov5.cpp"
+},
+
+{
+  "directory": "C:/Users/GHTK/Desktop/CO/Yolo_mobile/app/.cxx/cmake/debug/x86",
+  "command": "C:\\Users\\GHTK\\AppData\\Local\\Android\\Sdk\\ndk\\21.4.7075529\\toolchains\\llvm\\prebuilt\\windows-x86_64\\bin\\clang++.exe --target=i686-none-linux-android24 --gcc-toolchain=C:/Users/GHTK/AppData/Local/Android/Sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64 --sysroot=C:/Users/GHTK/AppData/Local/Android/Sdk/ndk/21.4.7075529/toolchains/llvm/prebuilt/windows-x86_64/sysroot  -Dncnnyolov5_EXPORTS -isystem C:/Users/GHTK/Desktop/AI/ncnn-20210525-android-vulkan/x86/include/ncnn -isystem C:/Users/GHTK/Desktop/AI/opencv-mobile-4.5.3-android/sdk/native/jni/include  -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -O0 -fno-limit-debug-info  -fPIC   -fno-rtti -fno-exceptions -std=gnu++11 -o CMakeFiles\\ncnnyolov5.dir\\ndkcamera.cpp.o -c C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\src\\main\\jni\\ndkcamera.cpp",
+  "file": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\src\\main\\jni\\ndkcamera.cpp"
+}
+]

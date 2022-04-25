@@ -169,12 +169,12 @@ JNIEXPORT jboolean JNICALL Java_com_tencent_ncnnyolov5_NcnnYolov5_loadModel(JNIE
 
     const char* modeltypes[] =
     {
-        "yolov5"
+        "yolov5",
     };
 
     const int target_sizes[] =
     {
-        320
+        416
     };
 
     const char* modeltype = modeltypes[(int)modelid];
