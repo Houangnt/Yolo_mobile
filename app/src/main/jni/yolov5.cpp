@@ -98,19 +98,19 @@ static inline float sigmoid(float x)
 static inline float unsigmoid(float y) {
     return static_cast<float>(-1.0 * (log((1.0 / y) - 1.0)));
 }
-static void generate_proposals(const ncnn::Mat &anchors, int stride, const ncnn::Mat &in_pad,
-                               const ncnn::Mat &feat_blob, float prob_threshold,
-                               std::vector <Object> &objects) {
+static void generate_proposals(const ncnn::Mat& anchors, int stride, const ncnn::Mat& in_pad, const ncnn::Mat& feat_blob, float prob_threshold, std::vector<Object>& objects)
+{
     const int num_grid = feat_blob.h;
-    if (prob_threshold > 0.6)
-        float unsig_pro = unsigmoid(prob_threshold);
 
     int num_grid_x;
     int num_grid_y;
-    if (in_pad.w > in_pad.h) {
+    if (in_pad.w > in_pad.h)
+    {
         num_grid_x = in_pad.w / stride;
         num_grid_y = num_grid / num_grid_x;
-    } else {
+    }
+    else
+    {
         num_grid_y = in_pad.h / stride;
         num_grid_x = num_grid / num_grid_y;
     }
@@ -119,106 +119,71 @@ static void generate_proposals(const ncnn::Mat &anchors, int stride, const ncnn:
 
     const int num_anchors = anchors.w / 2;
 
-    for (int q = 0; q < num_anchors; q++) {
+    for (int q = 0; q < num_anchors; q++)
+    {
         const float anchor_w = anchors[q * 2];
         const float anchor_h = anchors[q * 2 + 1];
 
         const ncnn::Mat feat = feat_blob.channel(q);
 
-        for (int i = 0; i < num_grid_y; i++) {
-            for (int j = 0; j < num_grid_x; j++) {
-                const float *featptr = feat.row(i * num_grid_x + j);
+        for (int i = 0; i < num_grid_y; i++)
+        {
+            for (int j = 0; j < num_grid_x; j++)
+            {
+                const float* featptr = feat.row(i * num_grid_x + j);
 
                 // find class index with max class score
                 int class_index = 0;
                 float class_score = -FLT_MAX;
-                float box_score = featptr[4];
-                if (prob_threshold > 0.6) {
-                    // while prob_threshold > 0.6, unsigmoid better than sigmoid
-                    if (box_score > unsig_pro) {
-                        for (int k = 0; k < num_class; k++) {
-                            float score = featptr[5 + k];
-                            if (score > class_score) {
-                                class_index = k;
-                                class_score = score;
-                            }
-                        }
-
-                        float confidence = sigmoid(box_score) * sigmoid(class_score);
-
-                        if (confidence >= prob_threshold) {
-
-                            float dx = sigmoid(featptr[0]);
-                            float dy = sigmoid(featptr[1]);
-                            float dw = sigmoid(featptr[2]);
-                            float dh = sigmoid(featptr[3]);
-
-                            float pb_cx = (dx * 2.f - 0.5f + j) * stride;
-                            float pb_cy = (dy * 2.f - 0.5f + i) * stride;
-
-                            float pb_w = pow(dw * 2.f, 2) * anchor_w;
-                            float pb_h = pow(dh * 2.f, 2) * anchor_h;
-
-                            float x0 = pb_cx - pb_w * 0.5f;
-                            float y0 = pb_cy - pb_h * 0.5f;
-                            float x1 = pb_cx + pb_w * 0.5f;
-                            float y1 = pb_cy + pb_h * 0.5f;
-
-                            Object obj;
-                            obj.rect.x = x0;
-                            obj.rect.y = y0;
-                            obj.rect.width = x1 - x0;
-                            obj.rect.height = y1 - y0;
-                            obj.label = class_index;
-                            obj.prob = confidence;
-
-                            objects.push_back(obj);
-                        }
-                    } else {
-                        for (int k = 0; k < num_class; k++) {
-                            float score = featptr[5 + k];
-                            if (score > class_score) {
-                                class_index = k;
-                                class_score = score;
-                            }
-                        }
-                        float confidence = sigmoid(box_score) * sigmoid(class_score);
-
-                        if (confidence >= prob_threshold) {
-                            float dx = sigmoid(featptr[0]);
-                            float dy = sigmoid(featptr[1]);
-                            float dw = sigmoid(featptr[2]);
-                            float dh = sigmoid(featptr[3]);
-
-                            float pb_cx = (dx * 2.f - 0.5f + j) * stride;
-                            float pb_cy = (dy * 2.f - 0.5f + i) * stride;
-
-                            float pb_w = pow(dw * 2.f, 2) * anchor_w;
-                            float pb_h = pow(dh * 2.f, 2) * anchor_h;
-
-                            float x0 = pb_cx - pb_w * 0.5f;
-                            float y0 = pb_cy - pb_h * 0.5f;
-                            float x1 = pb_cx + pb_w * 0.5f;
-                            float y1 = pb_cy + pb_h * 0.5f;
-
-                            Object obj;
-                            obj.rect.x = x0;
-                            obj.rect.y = y0;
-                            obj.rect.width = x1 - x0;
-                            obj.rect.height = y1 - y0;
-                            obj.label = class_index;
-                            obj.prob = confidence;
-
-                            objects.push_back(obj);
-                        }
+                for (int k = 0; k < num_class; k++)
+                {
+                    float score = featptr[5 + k];
+                    if (score > class_score)
+                    {
+                        class_index = k;
+                        class_score = score;
                     }
+                }
+
+                float box_score = featptr[4];
+
+                float confidence = sigmoid(box_score) * sigmoid(class_score);
+
+                if (confidence >= prob_threshold)
+                {
+                    float dx = sigmoid(featptr[0]);
+                    float dy = sigmoid(featptr[1]);
+                    float dw = sigmoid(featptr[2]);
+                    float dh = sigmoid(featptr[3]);
+
+                    float pb_cx = (dx * 2.f - 0.5f + j) * stride;
+                    float pb_cy = (dy * 2.f - 0.5f + i) * stride;
+
+                    float pb_w = pow(dw * 2.f, 2) * anchor_w;
+                    float pb_h = pow(dh * 2.f, 2) * anchor_h;
+
+                    float x0 = pb_cx - pb_w * 0.5f;
+                    float y0 = pb_cy - pb_h * 0.5f;
+                    float x1 = pb_cx + pb_w * 0.5f;
+                    float y1 = pb_cy + pb_h * 0.5f;
+
+                    Object obj;
+                    obj.rect.x = x0;
+                    obj.rect.y = y0;
+                    obj.rect.width = x1 - x0;
+                    obj.rect.height = y1 - y0;
+                    obj.label = class_index;
+                    obj.prob = confidence;
+
+                    objects.push_back(obj);
                 }
             }
         }
     }
 }
- 
- 
+
+
+
 Yolov5::Yolov5()
 {
     blob_pool_allocator.set_size_compare_ratio(0.f);
@@ -239,7 +204,6 @@ int Yolov5::load(const char* modeltype, int _target_size, const float* _mean_val
 #if NCNN_VULKAN
     yolov5.opt.use_vulkan_compute = use_gpu;
 #endif
-    yolov5.register_custom_layer("YoloV5Focus", YoloV5Focus_layer_creator);
     yolov5.opt.num_threads = ncnn::get_big_cpu_count();
     yolov5.opt.blob_allocator = &blob_pool_allocator;
     yolov5.opt.workspace_allocator = &workspace_pool_allocator;
@@ -276,7 +240,6 @@ int Yolov5::load(AAssetManager* mgr, const char* modeltype, int _target_size, bo
 #if NCNN_VULKAN
     yolov5.opt.use_vulkan_compute = use_gpu;
 #endif
-    yolov5.register_custom_layer("YoloV5Focus", YoloV5Focus_layer_creator);
     yolov5.opt.num_threads = ncnn::get_big_cpu_count();
     yolov5.opt.blob_allocator = &blob_pool_allocator;
     yolov5.opt.workspace_allocator = &workspace_pool_allocator;
@@ -284,7 +247,7 @@ int Yolov5::load(AAssetManager* mgr, const char* modeltype, int _target_size, bo
     char parampath[256];
     char modelpath[256];
 
-    target_size = 320;
+    target_size = 416;
     sprintf(parampath, "%s.param", modeltype);
     sprintf(modelpath, "%s.bin", modeltype);
 
@@ -358,7 +321,7 @@ int Yolov5::detect(const cv::Mat& rgb, std::vector<Object>& objects, float prob_
     {
         ncnn::Mat out;
         //ex.extract("781", out);
-        ex.extract("759", out);
+        ex.extract("667", out);
         ncnn::Mat anchors(6);
         anchors[0] = 30.f;
         anchors[1] = 61.f;
@@ -377,7 +340,7 @@ int Yolov5::detect(const cv::Mat& rgb, std::vector<Object>& objects, float prob_
     {
         ncnn::Mat out;
         //ex.extract("801", out);
-        ex.extract("773", out);
+        ex.extract("689", out);
 
         ncnn::Mat anchors(6);
         anchors[0] = 116.f;
@@ -430,15 +393,8 @@ int Yolov5::detect(const cv::Mat& rgb, std::vector<Object>& objects, float prob_
 int Yolov5::draw(cv::Mat& rgb, const std::vector<Object>& objects)
 {
     static const char* class_names[] = {
-        "person", "bicycle", "car", "motorcycle", "airplane", "bus", "train", "truck", "boat", "traffic light",
-        "fire hydrant", "stop sign", "parking meter", "bench", "bird", "cat", "dog", "horse", "sheep", "cow",
-        "elephant", "bear", "zebra", "giraffe", "backpack", "umbrella", "handbag", "tie", "suitcase", "frisbee",
-        "skis", "snowboard", "sports ball", "kite", "baseball bat", "baseball glove", "skateboard", "surfboard",
-        "tennis racket", "bottle", "wine glass", "cup", "fork", "knife", "spoon", "bowl", "banana", "apple",
-        "sandwich", "orange", "broccoli", "carrot", "hot dog", "pizza", "donut", "cake", "chair", "couch",
-        "potted plant", "bed", "dining table", "toilet", "tv", "laptop", "mouse", "remote", "keyboard", "cell phone",
-        "microwave", "oven", "toaster", "sink", "refrigerator", "book", "clock", "vase", "scissors", "teddy bear",
-        "hair drier", "toothbrush"
+            "top_left", "top_right", "bottom_left", "bottom_right", "face"
+            //"glass", "mask", "mask_glass", "normal"
     };
     static const unsigned char colors[19][3] = {
         { 54,  67, 244},

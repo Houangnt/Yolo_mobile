@@ -1,0 +1,3 @@
+ninja: Entering directory `C:\Users\GHTK\Desktop\CO\Yolo_mobile\app\.cxx\cmake\debug\arm64-v8a'
+[1/2] Building CXX object CMakeFiles/ncnnyolov5.dir/yolov5ncnn.cpp.o
+[2/2] Linking CXX shared library C:\Users\GHTK\Desktop\CO\Yolo_mobile\app\build\intermediates\cmake\debug\obj\arm64-v8a\libncnnyolov5.so

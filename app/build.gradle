@@ -5,7 +5,7 @@ android {
     buildToolsVersion "29.0.2"
 
     defaultConfig {
-        applicationId "com.tencent.ncnnyolox"
+        applicationId "com.tencent.ncnnyolov5"
         archivesBaseName = "$applicationId"
 
         minSdkVersion 24

@@ -1,0 +1,70 @@
+{
+  "variant": {
+    "module": {
+      "rootBuildGradleFolder": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile",
+      "sdkFolder": "C:\\Users\\GHTK\\AppData\\Local\\Android\\Sdk",
+      "isNativeCompilerSettingsCacheEnabled": false,
+      "isBuildOnlyTargetAbiEnabled": true,
+      "splitsAbiFilterSet": [],
+      "intermediatesFolder": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\build\\intermediates",
+      "gradleModulePathName": ":app",
+      "moduleRootFolder": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app",
+      "makeFile": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\src\\main\\jni\\CMakeLists.txt",
+      "buildSystem": "CMAKE",
+      "compilerSettingsCacheFolder": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\.cxx",
+      "cxxFolder": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\.cxx",
+      "ndkFolder": "C:\\Users\\GHTK\\AppData\\Local\\Android\\Sdk\\ndk\\21.4.7075529",
+      "ndkVersion": "21.4.7075529",
+      "ndkSupportedAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "ndkDefaultAbiList": [
+        "ARMEABI_V7A",
+        "ARM64_V8A",
+        "X86",
+        "X86_64"
+      ],
+      "cmakeToolchainFile": "."
+    },
+    "buildSystemArgumentList": [],
+    "cFlagList": [],
+    "cppFlagsList": [],
+    "variantName": "debug",
+    "soFolder": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\build\\intermediates\\cmake\\debug\\lib",
+    "objFolder": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\build\\intermediates\\cmake\\debug\\obj",
+    "jsonFolder": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\.cxx\\cmake\\debug",
+    "gradleBuildOutputFolder": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\.cxx\\cxx\\debug",
+    "isDebuggableEnabled": true,
+    "validAbiList": [
+      "ARMEABI_V7A",
+      "ARM64_V8A",
+      "X86",
+      "X86_64"
+    ],
+    "buildTargetSet": []
+  },
+  "abi": "X86",
+  "abiPlatformVersion": 24,
+  "cxxBuildFolder": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\.cxx\\cmake\\debug\\x86",
+  "jsonFile": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\.cxx\\cmake\\debug\\x86\\android_gradle_build.json",
+  "gradleBuildOutputFolder": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\.cxx\\cxx\\debug\\x86",
+  "objFolder": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\build\\intermediates\\cmake\\debug\\obj\\x86",
+  "buildCommandFile": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\.cxx\\cmake\\debug\\x86\\build_command.txt",
+  "buildOutputFile": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\.cxx\\cmake\\debug\\x86\\build_output.txt",
+  "modelOutputFile": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\.cxx\\cmake\\debug\\x86\\build_model.json",
+  "cmake": {
+    "cmakeListsWrapperFile": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\.cxx\\cxx\\debug\\x86\\CMakeLists.txt",
+    "toolchainWrapperFile": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\.cxx\\cxx\\debug\\x86\\android_gradle_build.toolchain.cmake",
+    "buildGenerationStateFile": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\.cxx\\cxx\\debug\\x86\\build_generation_state.json",
+    "cacheKeyFile": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\.cxx\\cxx\\debug\\x86\\compiler_cache_key.json",
+    "compilerCacheUseFile": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\.cxx\\cxx\\debug\\x86\\compiler_cache_use.json",
+    "compilerCacheWriteFile": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\.cxx\\cxx\\debug\\x86\\compiler_cache_write.json",
+    "toolchainSettingsFromCacheFile": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\.cxx\\cxx\\debug\\x86\\compiler_settings_cache.cmake",
+    "cmakeWrappingBaseFolder": "."
+  },
+  "jsonGenerationLoggingRecordFile": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\.cxx\\cmake\\debug\\x86\\json_generation_record.json",
+  "compileCommandsJsonFile": "C:\\Users\\GHTK\\Desktop\\CO\\Yolo_mobile\\app\\.cxx\\cmake\\debug\\x86\\compile_commands.json"
+}

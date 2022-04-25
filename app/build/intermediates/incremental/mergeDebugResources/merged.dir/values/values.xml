@@ -5,8 +5,8 @@
         <item>GPU</item>
     </string-array>
     <string-array name="model_array">
-        <item>yolox-nano</item>
-        <item>yolox-tiny</item>
+        <item>yolov5</item>
+        <item>yolov5</item>
     </string-array>
-    <string name="app_name">yolox_demo</string>
+    <string name="app_name">yolov5_demo</string>
 </resources>

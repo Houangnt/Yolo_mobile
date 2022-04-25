@@ -1,4 +1,4 @@
-com.tencent.ncnnyolox
+com.tencent.ncnnyolov5
 array cpugpu_array
 array model_array
 id buttonSwitchCamera

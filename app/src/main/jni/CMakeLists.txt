@@ -1,4 +1,4 @@
-project(ncnnyolox)
+project(ncnnyolov5)
 
 cmake_minimum_required(VERSION 3.10)
 
@@ -8,6 +8,6 @@ find_package(OpenCV REQUIRED core imgproc)
 set(ncnn_DIR C:/Users/GHTK/Desktop/AI/ncnn-20210525-android-vulkan/${ANDROID_ABI}/lib/cmake/ncnn)
 find_package(ncnn REQUIRED)
 
-add_library(ncnnyolox SHARED yoloxncnn.cpp yolox.cpp ndkcamera.cpp)
+add_library(ncnnyolov5 SHARED yolov5ncnn.cpp yolov5.cpp ndkcamera.cpp)
 
-target_link_libraries(ncnnyolox ncnn ${OpenCV_LIBS} camera2ndk mediandk)
+target_link_libraries(ncnnyolov5 ncnn ${OpenCV_LIBS} camera2ndk mediandk)
