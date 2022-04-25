@@ -302,8 +302,8 @@ int Yolov5::detect(const cv::Mat& rgb, std::vector<Object>& objects, float prob_
     //stride 8
     {
         ncnn::Mat out;
-        ex.extract("output", out);
-
+        //ex.extract("output", out);
+        ex.extract("645", out);
         ncnn::Mat anchors(6);
         anchors[0] = 10.f;
         anchors[1] = 13.f;
