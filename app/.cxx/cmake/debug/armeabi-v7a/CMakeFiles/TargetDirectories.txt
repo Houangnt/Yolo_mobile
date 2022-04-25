@@ -1,3 +1,0 @@
-C:/Users/GHTK/Desktop/CO/Yolo_mobile/app/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/ncnnyolov5.dir
-C:/Users/GHTK/Desktop/CO/Yolo_mobile/app/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/edit_cache.dir
-C:/Users/GHTK/Desktop/CO/Yolo_mobile/app/.cxx/cmake/debug/armeabi-v7a/CMakeFiles/rebuild_cache.dir

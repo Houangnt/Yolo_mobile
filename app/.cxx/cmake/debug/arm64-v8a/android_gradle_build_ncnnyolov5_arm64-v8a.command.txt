@@ -1,7 +1,0 @@
-Executable : C:\Users\GHTK\AppData\Local\Android\Sdk\cmake\3.10.2.4988404\bin\ninja.exe
-arguments : 
--C
-C:\Users\GHTK\Desktop\CO\Yolo_mobile\app\.cxx\cmake\debug\arm64-v8a
-ncnnyolov5
-jvmArgs : 
-
