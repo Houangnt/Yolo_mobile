@@ -1,9 +1,0 @@
-com.tencent.ncnnyolov5
-array cpugpu_array
-array model_array
-id buttonGetCorners
-id buttonSwitchCamera
-id cameraview
-id parentView
-layout main
-string app_name
