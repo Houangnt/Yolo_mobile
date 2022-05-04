@@ -302,7 +302,7 @@ int Yolov5::detect(const cv::Mat& rgb, std::vector<Object>& objects, float prob_
     //stride 8
     {
         ncnn::Mat out;
-        ex.extract("output", out);
+        ex.extract("645", out);
 
         ncnn::Mat anchors(6);
         anchors[0] = 10.f;
@@ -428,30 +428,26 @@ int Yolov5::draw(cv::Mat& rgb, const std::vector<Object>& objects)
         color_index++;
 
         cv::Scalar cc(color[0], color[1], color[2]);
-
         cv::rectangle(rgb,obj.rect, cc, 2);
-
         char text[256];
-        sprintf(text, "%s %.1f%%", class_names[obj.label], obj.prob * 100);
+        sprintf(text, "%s %d", class_names[obj.label], i);
+
 
         int baseLine = 0;
         cv::Size label_size = cv::getTextSize(text, cv::FONT_HERSHEY_SIMPLEX, 0.5, 1, &baseLine);
 
+
         int x = obj.rect.x;
-        int y = obj.rect.y - label_size.height - baseLine;
-        if (y < 0)
-            y = 0;
-        if (x + label_size.width > rgb.cols)
-            x = rgb.cols - label_size.width;
-
-        cv::rectangle(rgb, cv::Rect(cv::Point(x, y), cv::Size(label_size.width, label_size.height + baseLine)), cc, -1);
-
+        int y = obj.rect.y;
         cv::Scalar textcc = (color[0] + color[1] + color[2] >= 381) ? cv::Scalar(0, 0, 0) : cv::Scalar(255, 255, 255);
-
-        cv::putText(rgb, text, cv::Point(x, y + label_size.height), cv::FONT_HERSHEY_SIMPLEX, 0.5, textcc, 1);
-
+//      cv::putText(rgb, text, cv::Point(x, y + label_size.height), cv::FONT_HERSHEY_SIMPLEX, 0.5, textcc, 1);
+        int c_x = x + obj.rect.width /2;
+        int c_y = y + obj.rect.height /2 ;
+        //cv::rectangle(rgb, cv::Rect(cv::Point(c_x, c_y), cv::Size(label_size.width, label_size.height + baseLine)), cc, -1);
+        //cv::circle(rgb, cv::Point(c_x,c_y), 10, cc, 3);
+        __android_log_print(ANDROID_LOG_DEBUG, "ncnn_corners", "coor size %d %d %d", c_x, c_y, obj.label);
+        cv::putText(rgb, text, cv::Point(c_x, c_y + label_size.height), cv::FONT_HERSHEY_SIMPLEX, 0.5, textcc, 1);
     }
-    
-    
+
     return 0;
 }

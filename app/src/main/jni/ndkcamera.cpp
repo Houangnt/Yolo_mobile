@@ -452,6 +452,14 @@ void NdkCameraWindow::set_window(ANativeWindow* _win)
     ANativeWindow_acquire(win);
 }
 
+int* NdkCameraWindow::get_corners(int *corner) const {
+
+}
+
+bool NdkCameraWindow::has_face() {
+
+}
+
 void NdkCameraWindow::on_image_render(cv::Mat& rgb) const
 {
 }

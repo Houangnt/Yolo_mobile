@@ -15,16 +15,21 @@
 package com.tencent.ncnnyolov5;
 
 import android.content.res.AssetManager;
+import android.util.Log;
 import android.view.Surface;
 
 public class NcnnYolov5
 {
-
+    public static int[] corners = {0, 0, 0, 0, 0, 0 , 0 ,0 , 0, 0};
     public native boolean loadModel(AssetManager mgr, int modelid, int cpugpu);
     public native boolean openCamera(int facing);
     public native boolean closeCamera();
     public native boolean setOutputWindow(Surface surface);
-
+    public native boolean hasFace();
+    public native int[] getCorners(int [] corners);
+    public static void printCorners(){
+        Log.d("ncnn_corners", corners[0] + ", " + corners[1] + ", " + corners[2] + ", " + corners[3] + ", " + corners[4] + ", " + corners[5] + ", " + corners[6] + ", " + corners[7]);
+    }
     static {
         System.loadLibrary("ncnnyolov5");
     }
