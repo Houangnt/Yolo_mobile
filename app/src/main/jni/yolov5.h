@@ -29,7 +29,12 @@ public:
     int detect(const cv::Mat& rgb, std::vector<Object>& objects, float prob_threshold = 0.45f, float nms_threshold = 0.65f);
 
     int draw(cv::Mat& rgb, const std::vector<Object>& objects);
-
+public:
+    std::vector<Object> corners;
+    int rgb_w = 0;
+    int rgb_h = 0;
+    bool has_face;
+    int corner_values[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 private:
 
     ncnn::Net yolov5;

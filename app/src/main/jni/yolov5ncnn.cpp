@@ -104,9 +104,105 @@ static ncnn::Mutex lock;
 class MyNdkCamera : public NdkCameraWindow
 {
 public:
-    virtual void on_image_render(cv::Mat& rgb) const;
+    virtual void on_image_render(cv::Mat& rgb) const ;
+    virtual int* get_corners(int* corners) const;
+    virtual bool has_face();
 };
 
+bool MyNdkCamera::has_face() {
+    int len_obj = (g_yolov5->corners).size();
+    for(int i=0;i<len_obj;i++){
+        const Object &obj = (g_yolov5->corners)[i];
+        int lb = obj.label;
+        if(lb == 4){
+            g_yolov5->has_face = true;
+            return g_yolov5->has_face;
+        }
+    }
+    return  g_yolov5->has_face = false;
+}
+int* MyNdkCamera::get_corners(int *corners) const {
+    int len_obj = (g_yolov5->corners).size();
+    int len_coors = 10;
+    __android_log_print(ANDROID_LOG_DEBUG, "ncnn_corners", "size %d", len_obj);
+
+    for (int i = 0; i < len_coors - 2; ++i) {
+        (g_yolov5->corner_values)[i] = -1;
+    }
+
+
+    for (int i = 0; i < len_obj; ++i) {
+        const Object &obj = (g_yolov5->corners)[i];
+        int lb = obj.label;
+        if(lb == 4) {
+            __android_log_print(ANDROID_LOG_DEBUG, "ncnn_corners", "label %d", lb);
+            continue;
+        } else {
+            (g_yolov5->corner_values)[lb * 2] = obj.rect.x + obj.rect.width / 2;
+            (g_yolov5->corner_values)[lb * 2 + 1] = obj.rect.y + obj.rect.height / 2;
+        }
+    }
+
+    int w = g_yolov5->rgb_w;
+    int h = g_yolov5->rgb_h;
+    __android_log_print(ANDROID_LOG_DEBUG, "ncnn_corners", "size rgb 2 {%d, %d}", w, h);
+    (g_yolov5->corner_values)[8] = w;
+    (g_yolov5->corner_values)[9] = h;
+
+//    if( len_obj == 4) {
+//        int x1 = 0, x2 = 0, x3 = 0, x4 = 0, y1 = 0, y2 = 0, y3 = 0, y4 = 0;
+//        int i = 0;
+//        for (; i < 4; i ++){
+//            const Object& obj = (g_yolox->corners)[i];
+//            switch (obj.label) {
+//                case 0:
+//                    x1 = obj.rect.x + obj.rect.width / 2;
+//                    y1 = obj.rect.y + obj.rect.height / 2;
+//                    break;
+//                case 1:
+//                    x2 = obj.rect.x + obj.rect.width / 2;
+//                    y2 = obj.rect.y + obj.rect.height / 2;
+//                    break;
+//                case 2:
+//                    x3 = obj.rect.x + obj.rect.width / 2;
+//                    y3 = obj.rect.y + obj.rect.height / 2;
+//                    break;
+//                case 3:
+//                    x4 = obj.rect.x + obj.rect.width / 2;
+//                    y4 = obj.rect.y + obj.rect.height / 2;
+//                    break;
+//
+//            }
+//        }
+//        int w = g_yolox->rgb_w;
+//        int h = g_yolox->rgb_h;
+//        int cors[10] = {x1, y1, x2, y2, x3, y3, x4, y4, w, h};
+//        (g_yolox->corner_values)[0] = x1;
+//        (g_yolox->corner_values)[1] = y1;
+//        (g_yolox->corner_values)[2] = x2;
+//        (g_yolox->corner_values)[3] = y2;
+//        (g_yolox->corner_values)[4] = x3;
+//        (g_yolox->corner_values)[5] = y3;
+//        (g_yolox->corner_values)[6] = x4;
+//        (g_yolox->corner_values)[7] = y4;
+//        (g_yolox->corner_values)[8] = w;
+//        (g_yolox->corner_values)[9] = h;
+//
+//
+//        corners = cors;
+//        __android_log_print(ANDROID_LOG_DEBUG, "ncnn_corners", "coor [%d, %d, %d, %d %d %d %d %d]", x1, y1, x2, y2, x3, y3, x4, y4);
+//        __android_log_print(ANDROID_LOG_DEBUG, "ncnn_corners", "coor wh [%d, %d]", w, h);
+//
+//    } else {
+//        int cors[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+//        int i;
+//        for(i=0; i<10;i++){
+//            (g_yolox->corner_values)[i] = 0;
+//        }
+//        corners = cors;
+//    }
+    return g_yolov5->corner_values;
+}
 void MyNdkCamera::on_image_render(cv::Mat& rgb) const
 {
     {
@@ -116,7 +212,9 @@ void MyNdkCamera::on_image_render(cv::Mat& rgb) const
         {
             std::vector<Object> objects;
             g_yolov5->detect(rgb, objects);
-
+            g_yolov5->corners = objects;
+            g_yolov5->rgb_w = rgb.cols;
+            g_yolov5->rgb_h = rgb.rows;
             g_yolov5->draw(rgb, objects);
         }
         else
@@ -236,5 +334,52 @@ JNIEXPORT jboolean JNICALL Java_com_tencent_ncnnyolov5_NcnnYolov5_setOutputWindo
 
     return JNI_TRUE;
 }
+JNIEXPORT jboolean JNICALL Java_com_tencent_ncnnyolov5_NcnnYolov5_hasFace(JNIEnv* env, jobject thiz)
+{
+    bool hasface = (g_camera->has_face());
+    if(hasface == true) {
+        return JNI_TRUE;
+    } else
+        return JNI_FALSE;
+}
+// public native boolean getCorners();
+JNIEXPORT jintArray JNICALL Java_com_tencent_ncnnyolov5_NcnnYolov5_getCorners(JNIEnv* env, jobject thiz, jintArray corners)
+{
+    jint coor_jni [10];
+    __android_log_print(ANDROID_LOG_DEBUG, "ncnn", "getCorners");
 
+    int* coor = (g_camera->get_corners(reinterpret_cast<int *>(corners)));
+
+    for (int i = 0; i < 10; i ++){
+        coor_jni[i] = coor[i];
+    }
+//    if(coor_jni[8] < coor_jni[9]){
+//        __android_log_print(ANDROID_LOG_DEBUG, "ncnn_corners", "reverse order");
+//        int temp;
+//        for(int i = 0; i < 8; ++ i){
+//            if(i % 2 == 0){
+//                temp = coor_jni[i];
+//                coor_jni[i] = - coor_jni[i + 1];
+//                coor_jni[i + 1] = temp;
+//            }
+//        }
+//        temp = coor_jni[8];
+//        coor_jni[8] = coor_jni[9];
+//        coor_jni[9] = temp;
+//
+//        for(int i = 0; i < 8; ++ i){
+//            if(i % 2 == 0){
+//                coor_jni[i] = coor_jni[i] + coor_jni[8];
+//            }
+//        }
+//        __android_log_print(ANDROID_LOG_DEBUG, "ncnn_corners", "reverse coor {%d, %d, %d, %d}", coor_jni[0], coor_jni[1], coor_jni[2], coor_jni[3]);
+//        __android_log_print(ANDROID_LOG_DEBUG, "ncnn_corners", "reverse coor {%d, %d, %d, %d}", coor_jni[4], coor_jni[5], coor_jni[6], coor_jni[7]);
+//        __android_log_print(ANDROID_LOG_DEBUG, "ncnn_corners", "reverse size {%d, %d}", coor_jni[8], coor_jni[9]);
+//    } else {
+//        __android_log_print(ANDROID_LOG_DEBUG, "ncnn_corners", "preserve order");
+//    }
+    jintArray  result = env->NewIntArray(10);
+    env->SetIntArrayRegion(result, 0, 10, coor_jni);
+    return result;
+}
 }

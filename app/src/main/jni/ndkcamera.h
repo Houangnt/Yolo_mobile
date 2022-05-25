@@ -49,6 +49,10 @@ public:
 
     void set_window(ANativeWindow* win);
 
+    virtual int* get_corners(int *corner) const;
+
+    virtual bool has_face();
+
     virtual void on_image_render(cv::Mat& rgb) const;
 
     virtual void on_image(const unsigned char* nv21, int nv21_width, int nv21_height) const;
