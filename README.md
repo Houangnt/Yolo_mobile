@@ -1,5 +1,5 @@
 
-The yolox object detection
+The yolov5 object detection
 
 This is a sample ncnn android project, it depends on ncnn library,opencv and ncnn yolov5
 
