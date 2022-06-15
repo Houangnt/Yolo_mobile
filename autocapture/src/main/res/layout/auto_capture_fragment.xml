@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/actionBar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/actionClose"
+            android:layout_width="@dimen/close_size"
+            android:layout_height="@dimen/close_size"
+            android:layout_gravity="start"
+            android:padding="@dimen/top_action_button_padding"
+            android:src="@drawable/ic_close_vd_white_24"/>
+        <TextView
+            android:id="@+id/titleCapture"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/capture_card_title"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:fontFamily="@font/sf_medium"
+            android:maxLines="1"
+            android:paddingEnd="@dimen/top_action_button_padding"
+            android:src="@drawable/ic_close_vd_white_24"/>
+    </LinearLayout>
+
+    <LinearLayout
+        app:layout_constraintTop_toBottomOf="@+id/actionBar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:gravity="center"
+        android:layout_marginTop="48dp"
+        android:orientation="horizontal"
+        android:id="@+id/imgGuideContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="@dimen/card_guide_width"
+            android:layout_height="@dimen/card_guide_height"
+            android:id="@+id/frontCardGuide"
+            android:scaleType="fitXY"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/msgGuidance"
+            android:layout_marginEnd="15dp"
+            />
+        <ImageView
+            android:layout_width="@dimen/card_guide_width"
+            android:layout_height="@dimen/card_guide_height"
+            android:id="@+id/backCardGuide"
+            android:layout_marginStart="15dp"
+            android:scaleType="fitXY"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/msgGuidance"
+            />
+    </LinearLayout>
+
+
+
+    <FrameLayout
+        android:id="@+id/surfaceContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
+        android:layout_gravity="center_horizontal"
+        app:layout_constraintTop_toBottomOf="@+id/imgGuideContainer"
+        android:padding="16dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/cameraViewContainer"
+            android:visibility="visible"
+            android:padding="3dp">
+            <SurfaceView
+                android:id="@+id/cameraView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintDimensionRatio="1.586:1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+            </SurfaceView>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:id="@+id/imgCapturedContainer"
+            android:padding="3dp">
+            <ImageView
+                android:id="@+id/imgCaptured"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintDimensionRatio="1.586:1"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+            </ImageView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/msgStatus"
+            android:layout_marginHorizontal="25dp"
+            android:padding="5dp"
+            android:background="@drawable/bg_msg_capture"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:fontFamily="@font/sf_medium"
+            android:textColor="@color/white"
+            android:layout_gravity="center"
+            android:text="@string/app_name"
+            />
+
+        <View
+            android:id="@+id/view_1"
+            android:layout_width="30dp"
+            android:layout_height="3dp"
+            android:layout_gravity="top|left"
+            android:background="@color/vertex_frame_color" />
+
+        <View
+            android:layout_width="30dp"
+            android:layout_height="3dp"
+            android:layout_gravity="right|bottom"
+            android:background="@color/vertex_frame_color" />
+
+        <!-- Top vertical lines -->
+        <View
+            android:layout_width="3dp"
+            android:layout_height="30dp"
+            android:layout_gravity="top|left"
+            android:background="@color/vertex_frame_color" />
+
+        <View
+            android:layout_width="30dp"
+            android:layout_height="3dp"
+            android:layout_gravity="right|top"
+            android:background="@color/vertex_frame_color" />
+
+        <View
+            android:layout_width="3dp"
+            android:layout_height="30dp"
+            android:layout_gravity="top|right"
+            android:background="@color/vertex_frame_color" />
+
+        <!-- Bottom horizzontal lines -->
+        <View
+            android:layout_width="30dp"
+            android:layout_height="3dp"
+            android:layout_gravity="left|bottom"
+            android:background="@color/vertex_frame_color" />
+
+        <View
+            android:layout_width="30dp"
+            android:layout_height="3dp"
+            android:layout_gravity="right|bottom"
+            android:background="@color/vertex_frame_color" />
+
+        <!-- Bottom vertical lines -->
+        <View
+            android:layout_width="3dp"
+            android:layout_height="30dp"
+            android:layout_gravity="left|bottom"
+            android:background="@color/vertex_frame_color" />
+
+        <View
+            android:layout_width="3dp"
+            android:layout_height="30dp"
+            android:layout_gravity="right|bottom"
+            android:background="@color/vertex_frame_color" />
+    </FrameLayout>
+
+    <TextView
+        app:layout_constraintTop_toBottomOf="@+id/surfaceContainer"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:gravity="center"
+        android:layout_marginTop="48dp"
+        android:layout_marginHorizontal="24dp"
+        android:paddingHorizontal="24dp"
+        android:id="@+id/msgCapture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/capture_front_of_card_title"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:fontFamily="@font/sf_bold"
+        android:paddingEnd="@dimen/top_action_button_padding"
+        android:src="@drawable/ic_close_vd_white_24"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
