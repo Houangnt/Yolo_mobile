@@ -1,5 +1,0 @@
-<resources >
-    <style name="CaptureLibTheme" parent="Theme.MaterialComponents.NoActionBar">
-        <item name="android:statusBarColor">@android:color/transparent</item>
-    </style>
-</resources>
